@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray_text">#FF6F6F70</color>
+    <color name="hanyang_blue">#0E4A84</color>
+    <color name="hanyang_silver">#898C8e</color>
+
 </resources>
