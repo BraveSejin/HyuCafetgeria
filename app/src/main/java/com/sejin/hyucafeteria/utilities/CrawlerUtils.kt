@@ -36,11 +36,15 @@ suspend fun getDocument(
 ): Document {
     val url = generateUrl(cafeteriaId, urlDate)
     val doc = CoroutineScope(Dispatchers.IO).async {
-        val res = Jsoup.connect(url).execute()
+        val res = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
+            .ignoreHttpErrors(true)
+            .referrer("http://www.google.com")
+            .execute()
         Jsoup.parse(res.body())
     }
     return doc.await()
 }
+
 
 
 private fun createMealList(mealElements: List<Element>): List<Meal> {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sejin.hyucafeteria.data.Meal
 
-class MealAdapter: ListAdapter<Meal, RecyclerView.ViewHolder>(DiffUtil.ItemCallback<Meal>()) {
+class MealAdapter: ListAdapter<Meal, RecyclerView.ViewHolder>(MealDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         TODO("Not yet implemented")
     }
