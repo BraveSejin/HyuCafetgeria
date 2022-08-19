@@ -86,7 +86,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="40dp"
                 android:orientation="horizontal"
-                tools:background="@drawable/selector_cafeteria_radio_background" />
+                tools:background="@drawable/selector_cafeteria_radio_background"
+                />
         </HorizontalScrollView>
 
 
@@ -94,13 +95,16 @@
             android:id="@+id/rcv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:orientation="vertical"
+            android:layout_marginTop="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/scv_radio_group"
-            tools:listitem="@layout/list_item_menu"
-            tools:itemCount="4"/>
+            tools:itemCount="4"
+            tools:listitem="@layout/list_item_meal"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

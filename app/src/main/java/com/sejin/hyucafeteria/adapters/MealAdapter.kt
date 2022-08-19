@@ -25,9 +25,13 @@ class MealAdapter : ListAdapter<Meal, MealAdapter.MealViewHolder>(MealDiffCallba
         holder.bind(getItem(position))
     }
 
-    class MealViewHolder(private val binding: ListItemMealBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MealViewHolder(private val binding: ListItemMealBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Meal) {
             binding.mealName.text = item.title
+            binding.menuRcv.adapter = MenuAdapter().apply {
+                submitList(item.menus)
+            }
         }
     }
 }
