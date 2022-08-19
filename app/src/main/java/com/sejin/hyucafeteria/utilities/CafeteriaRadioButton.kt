@@ -2,6 +2,7 @@ package com.sejin.hyucafeteria.utilities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.RadioButton
@@ -20,8 +21,9 @@ class CafeteriaRadioButton(context: Context, val idName: CafeteriaIdName) :
         this.textAlignment = TEXT_ALIGNMENT_CENTER
         this.buttonDrawable = null
         this.setTextColor(resources.getColor(R.color.white))
+        this.setTypeface(typeface, Typeface.BOLD)
+        this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
         this.setBackgroundResource(R.drawable.selector_cafeteria_radio_background)
-        this.width
         this.width = dp(90)
         this.height = dp(45)
     }

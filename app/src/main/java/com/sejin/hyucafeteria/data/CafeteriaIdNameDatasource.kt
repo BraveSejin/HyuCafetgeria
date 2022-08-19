@@ -24,7 +24,7 @@ class CafeteriaIdNameDatasource {
         val urlDate = LocalDate.now().toUrlDate()
 
         var doc: Document? = null
-        for (i in 1 until 5) {
+        for (i in 1 .. 10) {
             doc = getDocument(BASE_CAFETERIA_ID, urlDate)
             logger("try $i")
             if (doc != null) {

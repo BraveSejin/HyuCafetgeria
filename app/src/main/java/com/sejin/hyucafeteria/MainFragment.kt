@@ -8,10 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import androidx.core.view.isGone
 import androidx.core.view.isNotEmpty
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.sejin.hyucafeteria.adapters.MealAdapter
 import com.sejin.hyucafeteria.data.CafeteriaIdName
 import com.sejin.hyucafeteria.data.PageInfo
@@ -22,6 +25,7 @@ class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var radioGroup: RadioGroup
     private lateinit var rcv: RecyclerView
+    private lateinit var lottieAnimation: LottieAnimationView
     private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +52,7 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         radioGroup = binding.cafeteriaRadioGroup
         rcv = binding.rcv
+        lottieAnimation = binding.aniLoad
 
         initViews()
         initObservers()
@@ -57,10 +62,12 @@ class MainFragment : Fragment() {
         radioGroup.setOnCheckedChangeListener { group, checkedId -> // 라디오버튼 체크시 현재 식당정보를 업데이트합니다.
             val radioBtn: CafeteriaRadioButton = radioGroup.findViewById(checkedId)
             updateCurrentPage(radioBtn.idName)
+            loadingPageInfo()
         }
     }
 
     private fun updateCurrentPage(idName: CafeteriaIdName) {
+        rcv.adapter = null
         mainViewModel.currentCafeteriaIdName.value = idName
         mainViewModel.setCurrentPageInfo()
     }
@@ -81,10 +88,20 @@ class MainFragment : Fragment() {
 
     private fun observeCurrentPageInfo() {
         mainViewModel.currentPageInfo.observe(viewLifecycleOwner) { pageInfo ->
+            var list = pageInfo.mealList
+            if (list.isEmpty()) {
+                onPageInfoEmpty()
+                return@observe
+            }
+
+            if (pageInfo.mealList.last().title.contains("공통"))
+                list = pageInfo.mealList.toMutableList().apply { removeLast() }
+
             rcv.adapter = MealAdapter().apply {
-                submitList(pageInfo.mealList)
+                submitList(list)
             }
             logPageInfo(pageInfo)
+            pageInfoLoadingEnded()
         }
     }
 
@@ -115,15 +132,36 @@ class MainFragment : Fragment() {
 
     fun onBeforeDateClicked() {
         mainViewModel.updateDateToBefore()
+        rcv.adapter = null
+        loadingPageInfo()
     }
 
     fun onNextDateClicked() {
         mainViewModel.updateDateToNext()
+        rcv.adapter = null
+        loadingPageInfo()
     }
 
     private fun addToRadioButtonToGroup(idName: CafeteriaIdName) {
         val radioButton = CafeteriaRadioButton(requireContext(), idName)
         radioGroup.addView(radioButton)
         radioButton.setMargins(left = 20)
+    }
+
+    private fun onPageInfoEmpty() {
+        binding.aniLoad.pauseAnimation()
+        binding.aniLoad.isGone = true
+        binding.textNone.isVisible = true
+    }
+
+    private fun pageInfoLoadingEnded() {
+        binding.aniLoad.pauseAnimation()
+        binding.aniLoad.isGone = true
+    }
+
+    private fun loadingPageInfo() {
+        binding.aniLoad.playAnimation()
+        binding.aniLoad.isVisible = true
+        binding.textNone.isGone = true
     }
 }

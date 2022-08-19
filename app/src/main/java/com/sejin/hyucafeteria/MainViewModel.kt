@@ -35,7 +35,7 @@ class MainViewModel() : ViewModel() {
 
     init {
         viewModelScope.launch {
-            setCafeteriaIdNames()
+            initCafeteriaIdNames()
         }
     }
 
@@ -51,8 +51,10 @@ class MainViewModel() : ViewModel() {
         setCurrentPageInfo()
     }
 
-
-    fun setCurrentCafeteriaIdNameAndCurrentDate(cafeteriaIdName: CafeteriaIdName, urlDate: UrlDate){
+    fun setCurrentCafeteriaIdNameAndCurrentDate(
+        cafeteriaIdName: CafeteriaIdName,
+        urlDate: UrlDate
+    ) {
         _currentCafeteriaIdName.value = cafeteriaIdName
         _currentDate.value = urlDate
     }
@@ -61,24 +63,25 @@ class MainViewModel() : ViewModel() {
         if (_currentCafeteriaIdName.value == null) return
 
         viewModelScope.launch {
-            _currentPageInfo.value =
-                pageInfoRepository.getPageInfo(
-                    _currentCafeteriaIdName.value!!.id,
-                    _currentDate.value!!
-                )
+            val pageInfo = pageInfoRepository.getPageInfo(
+                _currentCafeteriaIdName.value!!.id,
+                _currentDate.value!!
+            )
+            if (pageInfo == defaultPageInfo) {
+                _errorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!"
+            }
+            _currentPageInfo.value = pageInfo
         }
     }
 
-    private fun callEvent(msg: String){
-
+    private fun callEvent(msg: String) {
     }
 
-    private suspend fun setCafeteriaIdNames() {
+    private suspend fun initCafeteriaIdNames() {
         val idNames = idRepository.getCafeteriaIdNames()
-        if (idNames.isEmpty()){
-            _errorEvent.value = "식당 리스트를 받아오지 못했어요. 앱을 종료합니다."
+        if (idNames.isEmpty()) {
+            _errorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!!"
         }
-
         _cafeteriaIdNames.value = idNames
     }
 }
