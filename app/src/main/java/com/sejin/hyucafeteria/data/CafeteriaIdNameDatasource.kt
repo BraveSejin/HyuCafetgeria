@@ -3,6 +3,7 @@ package com.sejin.hyucafeteria.data
 import android.util.Log
 import com.sejin.hyucafeteria.utilities.BASE_CAFETERIA_ID
 import com.sejin.hyucafeteria.utilities.getDocument
+import com.sejin.hyucafeteria.utilities.logger
 import com.sejin.hyucafeteria.utilities.toUrlDate
 import org.jsoup.nodes.Document
 import java.time.LocalDate
@@ -21,7 +22,18 @@ class CafeteriaIdNameDatasource {
 
     suspend fun getCafeteriaIdNames(): List<CafeteriaIdName> {
         val urlDate = LocalDate.now().toUrlDate()
-        val doc = getDocument(BASE_CAFETERIA_ID, urlDate)
+
+        var doc: Document? = null
+        for (i in 1 until 5) {
+            doc = getDocument(BASE_CAFETERIA_ID, urlDate)
+            logger("try $i")
+            if (doc != null) {
+                break
+            }
+        }
+        if (doc == null) return listOf()
+
+
         val elements = doc.select("ul.nav.nav-tabs")
             .select("li").select("a")
         val idNamesList = mutableListOf<CafeteriaIdName>()

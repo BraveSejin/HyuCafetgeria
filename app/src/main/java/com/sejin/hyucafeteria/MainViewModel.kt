@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sejin.hyucafeteria.data.*
+import com.sejin.hyucafeteria.utilities.SingleLiveEvent
 import com.sejin.hyucafeteria.utilities.toLocalDate
 import com.sejin.hyucafeteria.utilities.toUrlDate
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -30,9 +30,12 @@ class MainViewModel() : ViewModel() {
     private val _currentDate = MutableLiveData<UrlDate>(LocalDate.now().toUrlDate())
     val currentDate = _currentDate
 
+    private val _errorEvent = SingleLiveEvent<String>()
+    val errorEvent = _errorEvent
+
     init {
         viewModelScope.launch {
-            updateCafeteriaIdNames()
+            setCafeteriaIdNames()
         }
     }
 
@@ -48,12 +51,15 @@ class MainViewModel() : ViewModel() {
         setCurrentPageInfo()
     }
 
-    private suspend fun updateCafeteriaIdNames() {
-        val idNames = idRepository.getCafeteriaIdNames()
-        _cafeteriaIdNames.value = idNames
+
+    fun setCurrentCafeteriaIdNameAndCurrentDate(cafeteriaIdName: CafeteriaIdName, urlDate: UrlDate){
+        _currentCafeteriaIdName.value = cafeteriaIdName
+        _currentDate.value = urlDate
     }
 
     fun setCurrentPageInfo() {
+        if (_currentCafeteriaIdName.value == null) return
+
         viewModelScope.launch {
             _currentPageInfo.value =
                 pageInfoRepository.getPageInfo(
@@ -61,5 +67,18 @@ class MainViewModel() : ViewModel() {
                     _currentDate.value!!
                 )
         }
+    }
+
+    private fun callEvent(msg: String){
+
+    }
+
+    private suspend fun setCafeteriaIdNames() {
+        val idNames = idRepository.getCafeteriaIdNames()
+        if (idNames.isEmpty()){
+            _errorEvent.value = "식당 리스트를 받아오지 못했어요. 앱을 종료합니다."
+        }
+
+        _cafeteriaIdNames.value = idNames
     }
 }

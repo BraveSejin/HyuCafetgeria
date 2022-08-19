@@ -1,14 +1,24 @@
 package com.sejin.hyucafeteria.data
 
+import android.util.Log
 import com.sejin.hyucafeteria.utilities.getDocument
+import com.sejin.hyucafeteria.utilities.logger
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 class PageInfoDatasource {
 
     suspend fun getPageInfo(cafeteriaId: String, urlDate: UrlDate): PageInfo {
+        var doc: Document? = null
+        for (i in 1 until 5) {
+            doc = getDocument(cafeteriaId, urlDate)
+            logger("try $i")
+            if (doc != null) {
+                break
+            }
+        }
+        if (doc == null) return defaultPageInfo
 
-        val doc = getDocument(cafeteriaId, urlDate)
         val cafeteria = parseCafeteria(doc)
         val mealList = parseMealList(doc)
         return PageInfo(urlDate, cafeteria, mealList)

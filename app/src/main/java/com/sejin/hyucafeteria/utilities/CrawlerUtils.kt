@@ -1,5 +1,6 @@
 package com.sejin.hyucafeteria.utilities
 
+import android.util.Log
 import com.sejin.hyucafeteria.data.Cafeteria
 import com.sejin.hyucafeteria.data.Meal
 import com.sejin.hyucafeteria.data.Menu
@@ -33,14 +34,20 @@ private fun generateUrl(cafeteriaId: String, urlDate: UrlDate): String {
 suspend fun getDocument(
     cafeteriaId: String,
     urlDate: UrlDate = LocalDate.now().toUrlDate()
-): Document {
+): Document? {
     val url = generateUrl(cafeteriaId, urlDate)
     val doc = CoroutineScope(Dispatchers.IO).async {
-        val res = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
+        val res = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36")
             .ignoreHttpErrors(true)
+            .timeout(1000 * 10)
             .referrer("http://www.google.com")
+            .followRedirects(true)
             .execute()
-        Jsoup.parse(res.body())
+        if (res.statusCode() != 200)
+            null
+        else
+            Jsoup.parse(res.body())
     }
     return doc.await()
 }
@@ -68,4 +75,9 @@ private fun createMenuList(menuElements: List<Element>): List<Menu> {
         result.add(Menu(menuName, image, price))
     }
     return result
+}
+
+
+fun logger(msg: String){
+    Log.i("logger: ", "$msg")
 }
