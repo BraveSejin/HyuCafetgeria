@@ -29,6 +29,7 @@ class MenuAdapter : ListAdapter<Menu, MenuAdapter.MenuViewHolder>(MenuDiffCallba
         fun bind(item: Menu) {
             binding.menuContent.text = item.name
             binding.menuPrice.text = if (item.price.length > 2) item.price else "가격 정보가 없어요"
+
         }
     }
 }
