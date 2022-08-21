@@ -13,6 +13,7 @@ import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.sejin.hyucafeteria.adapters.MealAdapter
@@ -26,7 +27,7 @@ class MainFragment : Fragment() {
     private lateinit var radioGroup: RadioGroup
     private lateinit var rcv: RecyclerView
     private lateinit var lottieAnimation: LottieAnimationView
-    private val mainViewModel: MainViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +108,7 @@ class MainFragment : Fragment() {
 
     private fun observeCafeteriaLoadingError() {
         mainViewModel.errorEvent.observe(viewLifecycleOwner) { message ->
+
             requireContext().toast(message)
             Handler(Looper.getMainLooper()).postDelayed({
                 requireActivity().finish()

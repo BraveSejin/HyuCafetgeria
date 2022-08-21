@@ -22,7 +22,7 @@ class CafeteriaRadioButton(context: Context, val idName: CafeteriaIdName) :
         this.buttonDrawable = null
         this.setTextColor(resources.getColor(R.color.white))
         this.setTypeface(typeface, Typeface.BOLD)
-        this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+        this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
         this.setBackgroundResource(R.drawable.selector_cafeteria_radio_background)
         this.width = dp(90)
         this.height = dp(45)

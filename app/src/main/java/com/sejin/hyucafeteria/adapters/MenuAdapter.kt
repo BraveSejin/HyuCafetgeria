@@ -2,11 +2,13 @@ package com.sejin.hyucafeteria.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sejin.hyucafeteria.data.Menu
 import com.sejin.hyucafeteria.databinding.ListItemMenuBinding
+import com.sejin.hyucafeteria.utilities.reduceEngMenu
 
 class MenuAdapter : ListAdapter<Menu, MenuAdapter.MenuViewHolder>(MenuDiffCallback()) {
 
@@ -27,9 +29,14 @@ class MenuAdapter : ListAdapter<Menu, MenuAdapter.MenuViewHolder>(MenuDiffCallba
     class MenuViewHolder(private val binding: ListItemMenuBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Menu) {
-            binding.menuContent.text = item.name
-            binding.menuPrice.text = if (item.price.length > 2) item.price else "가격 정보가 없어요"
-
+            binding.apply {
+                menuContent.text = item.name.reduceEngMenu()
+                if (item.price.length > 2) {
+                    menuPrice.text = item.price
+                } else {
+                    menuPrice.isGone = true
+                }
+            }
         }
     }
 }

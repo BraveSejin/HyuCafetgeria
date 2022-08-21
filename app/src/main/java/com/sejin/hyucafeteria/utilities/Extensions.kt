@@ -11,9 +11,11 @@ import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import com.sejin.hyucafeteria.data.Cafeteria
 import com.sejin.hyucafeteria.data.Meal
+import com.sejin.hyucafeteria.data.Menu
 import com.sejin.hyucafeteria.data.UrlDate
 import java.time.LocalDate
 import java.time.Month
+import java.util.Collections.replaceAll
 
 fun String.trimEmptyLines(): String {
     val list = this.split("\n").filter { it.trim().isNotEmpty() }
@@ -39,6 +41,26 @@ fun Meal.getInfo(): String {
     }
     return res
 }
+
+// 괄호 뒤에 영어가 나오는 경우 식별
+fun String.reduceEngMenu(): String {
+    if (!isEngMenuName()) return this
+    val closeIdx = indexOf(')')
+    return take(closeIdx+1)
+}
+
+fun String.isEngMenuName(): Boolean {
+
+    if (!contains('(') or !contains(')')) return false
+
+    val replaced = this.replace("[\n\r' ']".toRegex(), "")
+    val parenthesesEndIdx = replaced.indexOf(')')
+    if (parenthesesEndIdx + 1 < replaced.length - 1 && replaced[parenthesesEndIdx + 1].isAlphabet())
+        return true
+    return false
+}
+
+fun Char.isAlphabet(): Boolean = (this in 'a'..'z' || this in 'A'..'Z')
 
 fun LocalDate.toUrlDate(): UrlDate =
     UrlDate(
