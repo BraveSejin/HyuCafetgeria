@@ -2,4 +2,5 @@
     <string name="app_name">HyuCafeteria</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="not_operating">해당 식당은 오늘 운영하지 않아요&#128546;</string>
 </resources>

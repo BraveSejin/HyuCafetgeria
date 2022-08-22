@@ -5,11 +5,10 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        app:cardCornerRadius="16dp"
-        android:layout_marginBottom="16dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/background_white_rounded32"
-        >
+        app:cardCornerRadius="16dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     tools:text="조식" />
 
@@ -44,6 +43,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
                     tools:text="(11:30 ~ 13:00)" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -51,12 +52,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu_rcv"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                app:layout_constraintTop_toBottomOf="@id/ll_top"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/ll_top"
                 tools:listitem="@layout/list_item_menu">
 
             </androidx.recyclerview.widget.RecyclerView>
