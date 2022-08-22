@@ -19,6 +19,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.sejin.hyucafeteria.adapters.MealAdapter
 import com.sejin.hyucafeteria.data.CafeteriaIdName
 import com.sejin.hyucafeteria.data.PageInfo
+import com.sejin.hyucafeteria.data.defaultPageInfo
 import com.sejin.hyucafeteria.databinding.FragmentMainBinding
 import com.sejin.hyucafeteria.utilities.*
 
@@ -98,7 +99,7 @@ class MainFragment : Fragment() {
             if (pageInfo.mealList.last().title.contains("공통"))
                 list = pageInfo.mealList.toMutableList().apply { removeLast() }
 
-            rcv.adapter = MealAdapter().apply {
+            rcv.adapter = MealAdapter(mainViewModel.currentPageInfo.value?: defaultPageInfo).apply {
                 submitList(list)
             }
             logPageInfo(pageInfo)

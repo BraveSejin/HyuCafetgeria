@@ -9,10 +9,7 @@ import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
-import com.sejin.hyucafeteria.data.Cafeteria
-import com.sejin.hyucafeteria.data.Meal
-import com.sejin.hyucafeteria.data.Menu
-import com.sejin.hyucafeteria.data.UrlDate
+import com.sejin.hyucafeteria.data.*
 import java.time.LocalDate
 import java.time.Month
 import java.util.Collections.replaceAll
@@ -25,6 +22,22 @@ fun String.trimEmptyLines(): String {
 fun Context.toast(message: CharSequence) =
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
+// 생과대 신소재 제1생 제2생 학생식당 행원파크
+fun String.compressCafeteriaName(): String {
+    if (this.startsWith("생") || this == "교직원식당") return "생과대"
+    else if (this.startsWith("신") || this == "신교직원식당") return "신소재"
+    else if (this.startsWith("행")) return "행원파크"
+    else if (this.trim().contains("제1")) return "제1생"
+    else if (this.trim().contains("제2")) return "제2생"
+    else if (this.trim().contains("생식")) return "학생식당"
+
+    return this
+}
+
+fun Cafeteria.refine(): Cafeteria {
+    return Cafeteria(id,name.compressCafeteriaName(),location,notice)
+}
+
 fun Cafeteria.getInfo(): String {
     var res = "'"
     res += "식당 id: $id\n"
@@ -33,6 +46,10 @@ fun Cafeteria.getInfo(): String {
     res += "식당 운영시간: ${notice}\n"
     return res.trimEmptyLines()
 }
+
+//fun PageInfo.refine(): PageInfo {
+////    return this.apply { cafeteria.name = cafeteria.name.compressCafeteriaName() }
+//}
 
 fun Meal.getInfo(): String {
     var res = "식사분류 : $title\n"
@@ -46,7 +63,7 @@ fun Meal.getInfo(): String {
 fun String.reduceEngMenu(): String {
     if (!isEngMenuName()) return this
     val closeIdx = indexOf(')')
-    return take(closeIdx+1)
+    return take(closeIdx + 1)
 }
 
 fun String.isEngMenuName(): Boolean {
@@ -98,18 +115,6 @@ fun UrlDate.getKoreanDayOfWeek(): String {
     }
 
     return "$korean"
-}
-
-// 생과대 신소재 제1생 제2생 학생식당 행원파크
-fun String.compressCafeteriaName(): String {
-    if (this.startsWith("생")) return "생과대"
-    else if (this.startsWith("신")) return "신소재"
-    else if (this.startsWith("행")) return "행원파크"
-    else if (this.trim().contains("제1")) return "제1생"
-    else if (this.trim().contains("제2")) return "제2생"
-    else if (this.trim().contains("생식")) return "학생식당"
-
-    return this
 }
 
 fun View.setMargins(

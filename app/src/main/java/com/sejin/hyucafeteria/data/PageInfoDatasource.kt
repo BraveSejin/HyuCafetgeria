@@ -1,8 +1,8 @@
 package com.sejin.hyucafeteria.data
 
-import android.util.Log
 import com.sejin.hyucafeteria.utilities.getDocument
 import com.sejin.hyucafeteria.utilities.logger
+import com.sejin.hyucafeteria.utilities.refine
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
@@ -26,7 +26,7 @@ class PageInfoDatasource {
 
     private fun parseCafeteria(doc: Document): Cafeteria {
         val id = getActiveCafeteriaId(doc)
-        return parseCafeteriaWithId(id, doc)
+        return parseCafeteriaWithId(id, doc).refine()
     }
 
     private fun parseCafeteriaWithId(id: String, doc: Document): Cafeteria {
