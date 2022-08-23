@@ -10,5 +10,7 @@
     <color name="gray_text">#FF6F6F70</color>
     <color name="hanyang_blue">#0E4A84</color>
     <color name="hanyang_silver">#898C8e</color>
+    <color name="main_background">#e8e8e8</color>
+    <color name="date_btn_tint">@color/black</color>
 
 </resources>

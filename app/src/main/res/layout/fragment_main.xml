@@ -16,7 +16,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#e8e8e8"
+        android:background="@color/main_background"
         tools:context=".MainFragment">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -36,7 +36,8 @@
                 android:onClick="@{() -> fragment.onBeforeDateClicked()}"
                 android:scaleX="1.5"
                 android:scaleY="2"
-                android:src="@drawable/ic_baseline_keyboard_arrow_left_24" />
+                android:src="@drawable/ic_baseline_keyboard_arrow_left_24"
+                app:tint="@color/date_btn_tint" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -69,7 +70,8 @@
                 android:onClick="@{() -> fragment.onNextDateClicked()}"
                 android:scaleX="1.5"
                 android:scaleY="2"
-                android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                app:tint="@color/date_btn_tint" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -94,11 +96,10 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/ani_load"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
-            android:padding="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -127,14 +128,14 @@
             android:id="@+id/rcv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="24dp"
             android:layout_marginHorizontal="28dp"
+            android:layout_marginTop="24dp"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/scv_radio_group"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="4"
             tools:listitem="@layout/list_item_meal" />
 

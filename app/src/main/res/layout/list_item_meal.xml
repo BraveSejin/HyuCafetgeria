@@ -28,7 +28,6 @@
                     android:id="@+id/menu_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     tools:text="조식" />
@@ -43,8 +42,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:textStyle="bold"
                     android:textSize="14sp"
+                    android:textStyle="bold"
                     tools:text="(11:30 ~ 13:00)" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -54,6 +53,7 @@
                 android:id="@+id/menu_rcv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
