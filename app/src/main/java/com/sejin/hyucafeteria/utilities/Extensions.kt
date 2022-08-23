@@ -80,10 +80,13 @@ fun Menu.getMenuNameUntilParenthesisEnd(): String{
     return name.take(parenthesisEndIndex + 1)
 }
 
-fun Menu.getMenuNameWithoutEngWords(): String {
-    return name.split(" ")
+fun String.removeEngWords():String{
+    return split(" ")
         .filter { str -> !str.first().isAlphabet() }
         .joinToString(" ")
+}
+fun Menu.getMenuNameWithoutEngWords(): String {
+    return name.removeEngWords()
 }
 
 fun Meal.getInfo(): String {
@@ -92,13 +95,6 @@ fun Meal.getInfo(): String {
         res += "${menu.name} : ${menu.price}원 \n"
     }
     return res
-}
-
-// 괄호 뒤에 영어가 나오는 경우 식별
-fun String.reduceEngMenu(): String {
-    if (!isEngMenuName()) return this
-    val closeIdx = indexOf(')')
-    return take(closeIdx + 1)
 }
 
 fun String.isEngMenuName(): Boolean {

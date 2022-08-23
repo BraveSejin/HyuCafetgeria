@@ -6,24 +6,25 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
         <TextView
-            tools:visibility="visible"
-            android:visibility="gone"
             android:id="@+id/menu_bracket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="[Dam-A]" />
+            android:visibility="gone"
+            tools:text="[Dam-A]"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/menu_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lineSpacingExtra="12sp"
             android:textAlignment="center"
+            android:fontFamily="@font/notosans_medium"
             android:textSize="16sp"
             tools:text="잡곡밥\n덮밥용 마파두부" />
 

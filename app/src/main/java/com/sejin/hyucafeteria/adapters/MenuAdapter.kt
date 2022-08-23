@@ -38,7 +38,7 @@ class MenuAdapter(private val pageInfo: PageInfo, private val meal: Meal) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Menu) {
-            bindPrice(item)
+//            bindPrice(item)
             bindMenuName(item)
         }
 
@@ -60,7 +60,12 @@ class MenuAdapter(private val pageInfo: PageInfo, private val meal: Meal) :
                     if (meal.title == "분식")
 //                        item.getMenuNameUntilParenthesisEnd()
                         item.getMenuNameBeforeParenthesisStart()
-                    else item.getMenuNameWithoutEngWords()
+                    else if (item.isSquareBracketMenu()) {
+                        val pair = item.getSquareBracketMenuName()
+                        binding.menuBracket.isVisible = true
+                        binding.menuBracket.text = pair.first
+                        pair.second.removeEngWords()
+                    } else item.getMenuNameWithoutEngWords()
                 }
                 else -> {
                     if (item.isSquareBracketMenu()) {

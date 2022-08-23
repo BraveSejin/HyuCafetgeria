@@ -63,6 +63,7 @@ class MainFragment : Fragment() {
     private fun initViews() {
         radioGroup.setOnCheckedChangeListener { group, checkedId -> // 라디오버튼 체크시 현재 식당정보를 업데이트합니다.
             val radioBtn: CafeteriaRadioButton = radioGroup.findViewById(checkedId)
+            mainViewModel.currentCafeteriaIndex = radioGroup.indexOfChild(radioBtn)
             updateCurrentPage(radioBtn.idName)
             loadingPageInfo()
         }
@@ -80,11 +81,13 @@ class MainFragment : Fragment() {
         observeCafeteriaLoadingError()
     }
 
-    private fun observeCafeteriaIdNames() {
+    private fun observeCafeteriaIdNames() { // 최초 앱 진입하거나 상태변경시 실행
         mainViewModel.cafeteriaIdNames.observe(viewLifecycleOwner) {
             it.forEach { idName -> addToRadioButtonToGroup(idName) }
-            if (radioGroup.isNotEmpty() && radioGroup.checkedRadioButtonId == -1)
-                checkRadioButton(0)
+            if (radioGroup.isNotEmpty() && radioGroup.checkedRadioButtonId == -1 && mainViewModel.currentCafeteriaIndex == -1)
+                radioGroup.check(radioGroup.getChildAt(0).id)
+            else
+                radioGroup.check(radioGroup.getChildAt(mainViewModel.currentCafeteriaIndex).id)
         }
     }
 
@@ -99,9 +102,10 @@ class MainFragment : Fragment() {
             if (pageInfo.mealList.last().title.contains("공통"))
                 list = pageInfo.mealList.toMutableList().apply { removeLast() }
 
-            rcv.adapter = MealAdapter(mainViewModel.currentPageInfo.value?: defaultPageInfo).apply {
-                submitList(list)
-            }
+            rcv.adapter =
+                MealAdapter(mainViewModel.currentPageInfo.value ?: defaultPageInfo).apply {
+                    submitList(list)
+                }
             logPageInfo(pageInfo)
             pageInfoLoadingEnded()
         }
@@ -129,10 +133,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun checkRadioButton(index: Int) {
-        radioGroup.check(radioGroup.getChildAt(0).id)
-    }
-
     fun onBeforeDateClicked() {
         mainViewModel.updateDateToBefore()
         rcv.adapter = null
@@ -148,7 +148,7 @@ class MainFragment : Fragment() {
     private fun addToRadioButtonToGroup(idName: CafeteriaIdName) {
         val radioButton = CafeteriaRadioButton(requireContext(), idName)
         radioGroup.addView(radioButton)
-        radioButton.setMargins(left = 20)
+        radioButton.setMargins(dp(requireContext(), 16))
     }
 
     private fun onPageInfoEmpty() {

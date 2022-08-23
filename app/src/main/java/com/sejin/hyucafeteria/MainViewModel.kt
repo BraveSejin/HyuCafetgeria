@@ -24,6 +24,8 @@ class MainViewModel() : ViewModel() {
     private val _currentCafeteriaIdName = MutableLiveData<CafeteriaIdName>()
     val currentCafeteriaIdName = _currentCafeteriaIdName
 
+    var currentCafeteriaIndex = -1
+
     private val _currentPageInfo = MutableLiveData<PageInfo>()
     val currentPageInfo = _currentPageInfo
 

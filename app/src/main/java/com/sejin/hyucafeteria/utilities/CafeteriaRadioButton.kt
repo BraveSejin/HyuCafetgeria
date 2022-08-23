@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.RadioButton
+import androidx.core.view.marginRight
 import com.sejin.hyucafeteria.R
 import com.sejin.hyucafeteria.data.CafeteriaIdName
 
@@ -24,15 +25,7 @@ class CafeteriaRadioButton(context: Context, val idName: CafeteriaIdName) :
         this.setTypeface(typeface, Typeface.BOLD)
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
         this.setBackgroundResource(R.drawable.selector_cafeteria_radio_background)
-        this.width = dp(90)
-        this.height = dp(45)
-    }
-
-    private fun dp(int: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            int.toFloat(),
-            resources.displayMetrics
-        ).toInt()
+        this.width = dp(context, 90)
+        this.height = dp(context, 45)
     }
 }
