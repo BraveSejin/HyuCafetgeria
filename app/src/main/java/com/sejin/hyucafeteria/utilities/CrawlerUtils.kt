@@ -40,7 +40,6 @@ suspend fun getDocument(
         val res = Jsoup.connect(url)
             .ignoreHttpErrors(true)
             .timeout(1000 * 10)
-            .referrer("http://www.google.com")
             .followRedirects(true)
             .execute()
         if (res.statusCode() != 200)
