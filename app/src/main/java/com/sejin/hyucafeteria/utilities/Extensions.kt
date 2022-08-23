@@ -1,7 +1,6 @@
 package com.sejin.hyucafeteria.utilities
 
 import android.content.Context
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -12,7 +11,6 @@ import androidx.core.view.marginTop
 import com.sejin.hyucafeteria.data.*
 import java.time.LocalDate
 import java.time.Month
-import java.util.Collections.replaceAll
 
 fun String.trimEmptyLines(): String {
     val list = this.split("\n").filter { it.trim().isNotEmpty() }
@@ -34,8 +32,12 @@ fun String.compressCafeteriaName(): String {
     return this
 }
 
+fun String.commaToNewLine(): String {
+    return this.replace(',', '\n')
+}
+
 fun Cafeteria.refine(): Cafeteria {
-    return Cafeteria(id,name.compressCafeteriaName(),location,notice)
+    return Cafeteria(id, name.compressCafeteriaName(), location, notice)
 }
 
 fun Cafeteria.getInfo(): String {
@@ -50,6 +52,39 @@ fun Cafeteria.getInfo(): String {
 //fun PageInfo.refine(): PageInfo {
 ////    return this.apply { cafeteria.name = cafeteria.name.compressCafeteriaName() }
 //}
+
+fun Menu.isSquareBracketMenu(): Boolean {
+    val trimmed = name.trimStart()
+    if (trimmed.first() != '[') return false
+    val endBracketIndex = trimmed.indexOf(']')
+    return endBracketIndex != -1
+}
+
+fun Menu.getSquareBracketMenuName(): Pair<String, String>{
+
+    val bracketEndIndex = name.indexOf(']')
+    val bracketPart = name.take(bracketEndIndex.plus(1))
+    val remainPart = name.drop(bracketEndIndex.plus(1)).trim()
+    return Pair(bracketPart,remainPart)
+//    val parenthesisEndIndex = name.indexOf(')')
+//    return name.take(parenthesisEndIndex + 1)
+}
+
+fun Menu.getMenuNameBeforeParenthesisStart(): String{
+    val parenthesisStartIndex = name.indexOf('(')
+    return name.take(parenthesisStartIndex )
+}
+
+fun Menu.getMenuNameUntilParenthesisEnd(): String{
+    val parenthesisEndIndex = name.indexOf(')')
+    return name.take(parenthesisEndIndex + 1)
+}
+
+fun Menu.getMenuNameWithoutEngWords(): String {
+    return name.split(" ")
+        .filter { str -> !str.first().isAlphabet() }
+        .joinToString(" ")
+}
 
 fun Meal.getInfo(): String {
     var res = "식사분류 : $title\n"

@@ -3,6 +3,7 @@ package com.sejin.hyucafeteria.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +11,7 @@ import com.sejin.hyucafeteria.data.Meal
 import com.sejin.hyucafeteria.data.Menu
 import com.sejin.hyucafeteria.data.PageInfo
 import com.sejin.hyucafeteria.databinding.ListItemMenuBinding
-import com.sejin.hyucafeteria.utilities.isAlphabet
-import com.sejin.hyucafeteria.utilities.reduceEngMenu
+import com.sejin.hyucafeteria.utilities.*
 
 class MenuAdapter(private val pageInfo: PageInfo, private val meal: Meal) :
     ListAdapter<Menu, MenuAdapter.MenuViewHolder>(MenuDiffCallback()) {
@@ -36,33 +36,43 @@ class MenuAdapter(private val pageInfo: PageInfo, private val meal: Meal) :
         private val meal: Meal
     ) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Menu) {
-            binding.apply {
+            bindPrice(item)
+            bindMenuName(item)
+        }
 
-                if (pageInfo.cafeteria.name == "학생식당") {
-                    if (meal.title == "분식") {
-                        val parenthesisEndIndex = item.name.indexOf(')')
-                        menuContent.text = item.name.take(parenthesisEndIndex + 1)
-                    } else {
-                        menuContent.text =
-                            item.name.split(" ").filter { str -> !str.first().isAlphabet() }
-                                .joinToString(" ")
-                    }
-                } else if (pageInfo.cafeteria.name == "생과대" || pageInfo.cafeteria.name == "신소재") {
-
-                    menuContent.text = item.name
-                } else {
-                    menuContent.text = item.name//.reduceEngMenu().replace(",", "\n")
-                }
-
-
-
-                if (item.price.length > 2) {
-                    menuPrice.text = item.price
-                } else {
-                    menuPrice.isGone = true
-                }
+        private fun bindPrice(item: Menu) {
+            if (item.price.length > 2) {
+                binding.menuPrice.text = item.price
+            } else {
+                disablePrice()
             }
+        }
+
+        private fun disablePrice() {
+            binding.menuPrice.isGone = true
+        }
+
+        private fun bindMenuName(item: Menu) {
+            binding.menuContent.text = when (pageInfo.cafeteria.name) {
+                "학생식당" -> {
+                    if (meal.title == "분식")
+//                        item.getMenuNameUntilParenthesisEnd()
+                        item.getMenuNameBeforeParenthesisStart()
+                    else item.getMenuNameWithoutEngWords()
+                }
+                else -> {
+                    if (item.isSquareBracketMenu()) {
+                        val pair = item.getSquareBracketMenuName()
+                        binding.menuBracket.isVisible = true
+                        binding.menuBracket.text = pair.first
+                        pair.second
+                    } else {
+                        item.name
+                    }
+                }
+            }.commaToNewLine()
         }
     }
 }
