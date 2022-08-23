@@ -38,7 +38,6 @@ suspend fun getDocument(
     val url = generateUrl(cafeteriaId, urlDate)
     val doc = CoroutineScope(Dispatchers.IO).async {
         val res = Jsoup.connect(url)
-            .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36")
             .ignoreHttpErrors(true)
             .timeout(1000 * 10)
             .referrer("http://www.google.com")

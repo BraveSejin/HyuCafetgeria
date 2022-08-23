@@ -1,8 +1,8 @@
 package com.sejin.hyucafeteria
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sejin.hyucafeteria.base.BaseViewModel
 import com.sejin.hyucafeteria.data.*
 import com.sejin.hyucafeteria.utilities.SingleLiveEvent
 import com.sejin.hyucafeteria.utilities.toLocalDate
@@ -10,7 +10,7 @@ import com.sejin.hyucafeteria.utilities.toUrlDate
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class MainViewModel() : ViewModel() {
+class MainViewModel() : BaseViewModel() {
 
     private val idRepository: CafeteriaIdNameRepository = CafeteriaIdNameRepository.getInstance()
     private val pageInfoRepository: PageInfoRepository = PageInfoRepository.getInstance()
@@ -32,11 +32,11 @@ class MainViewModel() : ViewModel() {
     private val _currentDate = MutableLiveData<UrlDate>(LocalDate.now().toUrlDate())
     val currentDate = _currentDate
 
-    private val _errorEvent = SingleLiveEvent<String>()
-    val errorEvent = _errorEvent
+    private val _repeated404ErrorEvent = SingleLiveEvent<String>()
+    val repeated404ErrorEvent = _repeated404ErrorEvent
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineNetworkExceptionHandler) {
             initCafeteriaIdNames()
         }
     }
@@ -64,13 +64,13 @@ class MainViewModel() : ViewModel() {
     fun setCurrentPageInfo() {
         if (_currentCafeteriaIdName.value == null) return
 
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineNetworkExceptionHandler) {
             val pageInfo = pageInfoRepository.getPageInfo(
                 _currentCafeteriaIdName.value!!.id,
                 _currentDate.value!!
             )
             if (pageInfo == defaultPageInfo) {
-                _errorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!"
+                _repeated404ErrorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!"
             }
             _currentPageInfo.value = pageInfo
         }
@@ -82,7 +82,7 @@ class MainViewModel() : ViewModel() {
     private suspend fun initCafeteriaIdNames() {
         val idNames = idRepository.getCafeteriaIdNames()
         if (idNames.isEmpty()) {
-            _errorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!!"
+            _repeated404ErrorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!!"
         }
         _cafeteriaIdNames.value = idNames
     }

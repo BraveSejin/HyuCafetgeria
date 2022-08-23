@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         val currentNetwork = cm.activeNetwork
         if (currentNetwork == null) {
             toast("인터넷 연결 상태를 확인해주세요")
-            Thread.sleep(3000)
+            Thread.sleep(2000)
             finish()
         }
     }

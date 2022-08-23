@@ -12,7 +12,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -79,6 +78,7 @@ class MainFragment : Fragment() {
         observeCafeteriaIdNames()
         observeCurrentPageInfo()
         observeCafeteriaLoadingError()
+        observeNetworkError()
     }
 
     private fun observeCafeteriaIdNames() { // 최초 앱 진입하거나 상태변경시 실행
@@ -112,13 +112,21 @@ class MainFragment : Fragment() {
     }
 
     private fun observeCafeteriaLoadingError() {
-        mainViewModel.errorEvent.observe(viewLifecycleOwner) { message ->
+        mainViewModel.repeated404ErrorEvent.observe(viewLifecycleOwner) { message ->
 
             requireContext().toast(message)
             Handler(Looper.getMainLooper()).postDelayed({
                 requireActivity().finish()
-            }, 3000)
+            }, 2000)
+        }
+    }
 
+    private fun observeNetworkError(){
+        mainViewModel.isNetWorkError.observe(viewLifecycleOwner){ message ->
+            requireContext().toast(message)
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                requireActivity().finish()
+//            }, 3000)
         }
     }
 
