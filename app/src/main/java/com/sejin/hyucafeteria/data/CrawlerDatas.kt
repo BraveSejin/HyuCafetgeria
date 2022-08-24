@@ -3,6 +3,11 @@ package com.sejin.hyucafeteria.data
 import com.sejin.hyucafeteria.utilities.trimEmptyLines
 import java.time.LocalDate
 
+data class InitialInfo(
+    val idNameList: List<CafeteriaIdName>,
+    val pageInfo: PageInfo
+)
+
 data class PageInfo(
     val urlDate: UrlDate,
     val cafeteria: Cafeteria,
@@ -28,3 +33,4 @@ val defaultCafeteria = Cafeteria("","","","")
 val defaultMeal = Meal("", listOf())
 val defaultMenu = Menu("","","")
 val defaultPageInfo = PageInfo(urlDate = defaultUrlDate, cafeteria = defaultCafeteria, mealList = listOf())
+val defaultInitialInfo = InitialInfo(listOf(), defaultPageInfo)

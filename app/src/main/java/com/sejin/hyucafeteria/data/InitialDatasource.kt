@@ -1,26 +1,22 @@
 package com.sejin.hyucafeteria.data
 
-import android.util.Log
-import com.sejin.hyucafeteria.utilities.BASE_CAFETERIA_ID
-import com.sejin.hyucafeteria.utilities.getDocument
-import com.sejin.hyucafeteria.utilities.logger
-import com.sejin.hyucafeteria.utilities.toUrlDate
+import com.sejin.hyucafeteria.utilities.*
 import org.jsoup.nodes.Document
 import java.time.LocalDate
 
-class CafeteriaIdNameDatasource {
+class InitialDatasource {
     // 먼저 아이디를 가져와야한다.
 
     companion object {
-        private var instance: CafeteriaIdNameDatasource? = null
+        private var instance: InitialDatasource? = null
 
         fun getInstance() =
             instance ?: synchronized(this) {
-                instance ?: CafeteriaIdNameDatasource().also { instance = it }
+                instance ?: InitialDatasource().also { instance = it }
             }
     }
 
-    suspend fun getCafeteriaIdNames(): List<CafeteriaIdName> {
+    suspend fun getInitialInfo(): InitialInfo {
         val urlDate = LocalDate.now().toUrlDate()
 
         var doc: Document? = null
@@ -31,7 +27,7 @@ class CafeteriaIdNameDatasource {
                 break
             }
         }
-        if (doc == null) return listOf()
+        if (doc == null) return defaultInitialInfo
 
 
         val elements = doc.select("ul.nav.nav-tabs")
@@ -45,7 +41,11 @@ class CafeteriaIdNameDatasource {
             val name = linkElement.text()
             idNamesList.add(CafeteriaIdName(id, name))
         }
-        return idNamesList
+
+        val cafeteria = parseCafeteria(doc)
+        val mealList = parseMealList(doc)
+
+        return InitialInfo(idNamesList, PageInfo(urlDate, cafeteria, mealList))
     }
 
     fun getActiveCafeteriaId(doc: Document): String {

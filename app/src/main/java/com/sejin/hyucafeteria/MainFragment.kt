@@ -29,6 +29,8 @@ class MainFragment : Fragment() {
     private lateinit var lottieAnimation: LottieAnimationView
     private val mainViewModel: MainViewModel by viewModels<MainViewModel>()
 
+    private var alreadyCheckedOnInit: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -63,15 +65,17 @@ class MainFragment : Fragment() {
         radioGroup.setOnCheckedChangeListener { group, checkedId -> // 라디오버튼 체크시 현재 식당정보를 업데이트합니다.
             val radioBtn: CafeteriaRadioButton = radioGroup.findViewById(checkedId)
             mainViewModel.currentCafeteriaIndex = radioGroup.indexOfChild(radioBtn)
-            updateCurrentPage(radioBtn.idName)
-            loadingPageInfo()
+            if (alreadyCheckedOnInit) {
+                updateCurrentPage(radioBtn.idName) // 처음에는 작동 안하게 해야함. ㅁㄴㅇㄹ
+                pageInfoAnimationStart()
+            }
         }
     }
 
     private fun updateCurrentPage(idName: CafeteriaIdName) {
         rcv.adapter = null
         mainViewModel.currentCafeteriaIdName.value = idName
-        mainViewModel.setCurrentPageInfo()
+        mainViewModel.updateCurrentPageInfo()
     }
 
     private fun initObservers() {
@@ -82,14 +86,19 @@ class MainFragment : Fragment() {
     }
 
     private fun observeCafeteriaIdNames() { // 최초 앱 진입하거나 상태변경시 실행
-        mainViewModel.cafeteriaIdNames.observe(viewLifecycleOwner) {
+        mainViewModel.idNameList.observe(viewLifecycleOwner) {
             it.forEach { idName -> addToRadioButtonToGroup(idName) }
-            if (radioGroup.isNotEmpty() && radioGroup.checkedRadioButtonId == -1 && mainViewModel.currentCafeteriaIndex == -1)
+            if (needRadioButtonInit()) {
                 radioGroup.check(radioGroup.getChildAt(0).id)
-            else
+                alreadyCheckedOnInit = true
+            } else {
                 radioGroup.check(radioGroup.getChildAt(mainViewModel.currentCafeteriaIndex).id)
+            }
         }
     }
+
+    private fun needRadioButtonInit() =
+        radioGroup.isNotEmpty() && radioGroup.checkedRadioButtonId == -1 && mainViewModel.currentCafeteriaIndex == -1
 
     private fun observeCurrentPageInfo() {
         mainViewModel.currentPageInfo.observe(viewLifecycleOwner) { pageInfo ->
@@ -106,8 +115,7 @@ class MainFragment : Fragment() {
                 MealAdapter(mainViewModel.currentPageInfo.value ?: defaultPageInfo).apply {
                     submitList(list)
                 }
-            logPageInfo(pageInfo)
-            pageInfoLoadingEnded()
+            pageInfoAnimationEnd()
         }
     }
 
@@ -121,12 +129,12 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun observeNetworkError(){
-        mainViewModel.isNetWorkError.observe(viewLifecycleOwner){ message ->
+    private fun observeNetworkError() {
+        mainViewModel.isNetWorkError.observe(viewLifecycleOwner) { message ->
             requireContext().toast(message)
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                requireActivity().finish()
-//            }, 3000)
+            Handler(Looper.getMainLooper()).postDelayed({
+                requireActivity().finish()
+            }, 3000)
         }
     }
 
@@ -144,13 +152,13 @@ class MainFragment : Fragment() {
     fun onBeforeDateClicked() {
         mainViewModel.updateDateToBefore()
         rcv.adapter = null
-        loadingPageInfo()
+        pageInfoAnimationStart()
     }
 
     fun onNextDateClicked() {
         mainViewModel.updateDateToNext()
         rcv.adapter = null
-        loadingPageInfo()
+        pageInfoAnimationStart()
     }
 
     private fun addToRadioButtonToGroup(idName: CafeteriaIdName) {
@@ -165,12 +173,12 @@ class MainFragment : Fragment() {
         binding.textNone.isVisible = true
     }
 
-    private fun pageInfoLoadingEnded() {
+    private fun pageInfoAnimationEnd() {
         binding.aniLoad.pauseAnimation()
         binding.aniLoad.isGone = true
     }
 
-    private fun loadingPageInfo() {
+    private fun pageInfoAnimationStart() {
         binding.aniLoad.playAnimation()
         binding.aniLoad.isVisible = true
         binding.textNone.isGone = true

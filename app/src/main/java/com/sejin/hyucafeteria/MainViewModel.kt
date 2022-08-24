@@ -12,11 +12,11 @@ import java.time.LocalDate
 
 class MainViewModel() : BaseViewModel() {
 
-    private val idRepository: CafeteriaIdNameRepository = CafeteriaIdNameRepository.getInstance()
+    private val initialRepository: InitailRepository = InitailRepository.getInstance()
     private val pageInfoRepository: PageInfoRepository = PageInfoRepository.getInstance()
 
-    private val _cafeteriaIdNames = MutableLiveData<List<CafeteriaIdName>>()
-    val cafeteriaIdNames = _cafeteriaIdNames
+    private val _idNameList = MutableLiveData<List<CafeteriaIdName>>()
+    val idNameList = _idNameList
 
     private val _pageInfoList = MutableLiveData<List<PageInfo>>()
     val pageInfoList = _pageInfoList
@@ -37,31 +37,24 @@ class MainViewModel() : BaseViewModel() {
 
     init {
         viewModelScope.launch(coroutineNetworkExceptionHandler) {
-            initCafeteriaIdNames()
+            getInitialInfo()
         }
     }
 
     fun updateDateToBefore() {
         val temp = currentDate.value?.toLocalDate()!!.minusDays(1).toUrlDate()
         _currentDate.value = temp
-        setCurrentPageInfo()
+        updateCurrentPageInfo()
     }
 
     fun updateDateToNext() {
         val temp = currentDate.value?.toLocalDate()!!.plusDays(1).toUrlDate()
         _currentDate.value = temp
-        setCurrentPageInfo()
+        updateCurrentPageInfo()
     }
 
-    fun setCurrentCafeteriaIdNameAndCurrentDate(
-        cafeteriaIdName: CafeteriaIdName,
-        urlDate: UrlDate
-    ) {
-        _currentCafeteriaIdName.value = cafeteriaIdName
-        _currentDate.value = urlDate
-    }
 
-    fun setCurrentPageInfo() {
+    fun updateCurrentPageInfo() {
         if (_currentCafeteriaIdName.value == null) return
 
         viewModelScope.launch(coroutineNetworkExceptionHandler) {
@@ -76,14 +69,12 @@ class MainViewModel() : BaseViewModel() {
         }
     }
 
-    private fun callEvent(msg: String) {
-    }
-
-    private suspend fun initCafeteriaIdNames() {
-        val idNames = idRepository.getCafeteriaIdNames()
-        if (idNames.isEmpty()) {
+    private suspend fun getInitialInfo() {
+        val initialInfo = initialRepository.getInitialInfo()
+        if (initialInfo == defaultInitialInfo) {
             _repeated404ErrorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!!"
         }
-        _cafeteriaIdNames.value = idNames
+        _idNameList.value = initialInfo.idNameList
+        _currentPageInfo.value = initialInfo.pageInfo
     }
 }
