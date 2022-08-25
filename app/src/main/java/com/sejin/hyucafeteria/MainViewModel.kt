@@ -7,7 +7,9 @@ import com.sejin.hyucafeteria.data.*
 import com.sejin.hyucafeteria.utilities.SingleLiveEvent
 import com.sejin.hyucafeteria.utilities.toLocalDate
 import com.sejin.hyucafeteria.utilities.toUrlDate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class MainViewModel() : BaseViewModel() {
@@ -36,9 +38,7 @@ class MainViewModel() : BaseViewModel() {
     val repeated404ErrorEvent = _repeated404ErrorEvent
 
     init {
-        viewModelScope.launch(coroutineNetworkExceptionHandler) {
-            getInitialInfo()
-        }
+        getInitialInfo()
     }
 
     fun updateDateToBefore() {
@@ -53,15 +53,15 @@ class MainViewModel() : BaseViewModel() {
         updateCurrentPageInfo()
     }
 
-
     fun updateCurrentPageInfo() {
         if (_currentCafeteriaIdName.value == null) return
-
         viewModelScope.launch(coroutineNetworkExceptionHandler) {
-            val pageInfo = pageInfoRepository.getPageInfo(
-                _currentCafeteriaIdName.value!!.id,
-                _currentDate.value!!
-            )
+            val pageInfo: PageInfo = withContext(Dispatchers.IO) {
+                pageInfoRepository.getPageInfo(
+                    _currentCafeteriaIdName.value!!.id,
+                    _currentDate.value!!
+                )
+            }
             if (pageInfo == defaultPageInfo) {
                 _repeated404ErrorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!"
             }
@@ -69,12 +69,16 @@ class MainViewModel() : BaseViewModel() {
         }
     }
 
-    private suspend fun getInitialInfo() {
-        val initialInfo = initialRepository.getInitialInfo()
-        if (initialInfo == defaultInitialInfo) {
-            _repeated404ErrorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!!"
+    private fun getInitialInfo() {
+        viewModelScope.launch(coroutineNetworkExceptionHandler) {
+            val initialInfo = withContext(Dispatchers.IO) {
+                initialRepository.getInitialInfo()
+            }
+            if (initialInfo == defaultInitialInfo) {
+                _repeated404ErrorEvent.value = "정보를 받아오지 못했어요. 안전을 위해 앱을 종료합니다. 곧 업데이트 할게요!!"
+            }
+            _idNameList.value = initialInfo.idNameList
+            _currentPageInfo.value = initialInfo.pageInfo
         }
-        _idNameList.value = initialInfo.idNameList
-        _currentPageInfo.value = initialInfo.pageInfo
     }
 }
