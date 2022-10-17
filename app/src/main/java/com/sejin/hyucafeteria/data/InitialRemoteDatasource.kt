@@ -4,23 +4,23 @@ import com.sejin.hyucafeteria.utilities.*
 import org.jsoup.nodes.Document
 import java.time.LocalDate
 
-class InitialDatasource {
+class InitialRemoteDatasource: InitialInfoDataSource {
     // 먼저 아이디를 가져와야한다.
 
     companion object {
-        private var instance: InitialDatasource? = null
+        private var instance: InitialRemoteDatasource? = null
 
         fun getInstance() =
             instance ?: synchronized(this) {
-                instance ?: InitialDatasource().also { instance = it }
+                instance ?: InitialRemoteDatasource().also { instance = it }
             }
     }
 
-    suspend fun getInitialInfo(): InitialInfo {
+    override suspend fun getInitialInfo(): InitialInfo {
         val urlDate = LocalDate.now().toUrlDate()
 
         var doc: Document? = null
-        for (i in 1 .. 4) {
+        for (i in 1 .. 2) {
             doc = getDocument(BASE_CAFETERIA_ID, urlDate)
             logger("try $i")
             if (doc != null) {

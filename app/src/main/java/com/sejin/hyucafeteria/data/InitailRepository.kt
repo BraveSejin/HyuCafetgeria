@@ -1,7 +1,7 @@
 package com.sejin.hyucafeteria.data
 
 class InitailRepository {
-    private val datasource: InitialDatasource = InitialDatasource.getInstance()
+    private val datasource: InitialRemoteDatasource = InitialRemoteDatasource.getInstance()
 
     suspend fun getInitialInfo(): InitialInfo {
         return datasource.getInitialInfo()

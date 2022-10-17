@@ -9,7 +9,7 @@ class PageInfoDatasource {
 
     suspend fun getPageInfo(cafeteriaId: String, urlDate: UrlDate): PageInfo {
         var doc: Document? = null
-        for (i in 1 .. 4) {
+        for (i in 1 .. 2) {
             doc = getDocument(cafeteriaId, urlDate)
             logger("try $i")
             if (doc != null) {
